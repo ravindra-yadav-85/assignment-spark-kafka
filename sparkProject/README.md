@@ -5,7 +5,7 @@
 #### Dependencies
 
 * Scala 2.12
-* Spark 3.1.2
+* Spark 3.1.1
 
 ## Building with Maven
 
@@ -154,8 +154,91 @@ spark-operator/spark-operator \
 --set sparkJobNamespace="au-daas-spark",nodeSelector.application="spark",webhook.enable=true,webhook.namespaceSelector="name=au-daas-spark",image.tag="v1beta2-1.2.3-3.1.1"
 ```
 
-spark application deployment
-bin -> contains the runner for batch and streaming apps
-conf -> contains the configuration for batch and streaming apps
-lib -> contains the binary (e.g. jar)
-data ->  
+#### Configurations
+config `Contains the configuration for batch and streaming apps`
+
+Spark Streaming App
+```
+spark_app_name = <SPARK APPLICATION NAME>
+input_stream_dir = <LOCATION OF STREAM DIRECTORY>
+input_file_format = <>
+input_delimiter = <CSV FILE DELIMITER>
+input_header = <FLAG TO INDICATE HEADER AVAILABILITY>
+max_files_per_trigger = <MAXIMUM NUMBER OF FILES FOR PROCESSING>
+checkpoint_dir = <LOCATION OF CHECKPOINT DIRECTORY>
+source_archive_dir = <LOCATION OF ARCHIVE DIRECTORY>
+clean_source = <CLEAN UP PROCESSED FILES>
+output_path = <LOCATION OF OUTPUT DIRECTORY>
+output_delimiter = <CSV FILE DELIMITER>
+output_header = <FLAG TO INDICATE HEADER AVAILABILITY>
+block_size = <STORAGE BLOCK SIZE>
+```
+
+Spark Batch App
+```
+spark_app_name = <SPARK APPLICATION NAME>
+input_path = <LOCATION OF SOURCE DIRECTORY OR FILE>
+input_delimiter = <CSV FILE DELIMITER>
+input_header = <FLAG TO INDICATE HEADER AVAILABILITY>
+output_path = <LOCATION OF OUTPUT DIRECTORY>
+output_delimiter = <CSV FILE DELIMITER>
+output_header = <FLAG TO INDICATE HEADER AVAILABILITY>
+block_size = <STORAGE BLOCK SIZE>
+sql_query = <SQL QUERY>
+```
+
+#### Spark Apps Runners
+bin `Contains the runner for batch and streaming apps`
+
+Spark Streaming App
+```
+sh ./bin/streaming_runner.sh
+```
+Spark Batch App
+```
+sh ./bin/batch_runner.sh
+```
+
+#### Spark Apps Libraries/packages
+lib `Contains the binary for batch and streaming apps`
+
+#### Data Directories
+data `Contains Input/Output directories for batch and streaming apps`
+
+Spark Streaming App
+```
+stream_data  -> STREAMING DIRECTORY
+output/stream -> STREAMING OUTPUT DIRECTORY
+```
+Spark Batch App
+```
+raw_data -> SOURCE DIRECTORY
+output/batch -> BATCH OUTPUT DIRECTORY
+```
+
+#### Usage
+1. Clone the project
+2. cd spark-project
+
+3. Spark Batch App
+   1. Update the configs
+   2. run batch sh ./bin/batch_runner.sh
+   3. Output will be available at output directory
+
+4. Spark Streaming App
+   1. Update the configs
+   2. run streaming sh ./bin/streaming_runner.sh
+   3. Output will be available at output directory
+
+
+#### Tradeoffs compared to alternative solutions
+Apache Spark Vs Apache Flink
+1. `Throughput` Spark relies on micro-batching and Flink relies on Event-based Streaming
+2. `Windowing` Spark supports Time based and Flink supports Time and count based
+3. `Auto-scaling` Spark support auto scaling and Flink does not
+4. `State Management` Flink only support distributed snapshots 
+5. `Community Support` Spark has about 1000 and Flink has about 400
+
+#### Potential Improvements
+1. Moving the Input streaming from files to Kafka
+2. Moving to Apache Flink

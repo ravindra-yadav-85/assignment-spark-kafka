@@ -18,7 +18,7 @@
 <!--        <sparkVersion>2.2.0</sparkVersion>-->
 <!--        <scalaVersion>2.11.11</scalaVersion>-->
 <!--        <scalaMajorVersion>2.11</scalaMajorVersion>-->
-        <sparkVersion>3.0.3</sparkVersion>
+        <sparkVersion>3.1.1</sparkVersion>
         <scalaVersion>2.12</scalaVersion>
         <scalaMajorVersion>2.12</scalaMajorVersion>
         <scoverage.plugin.version>1.3.0</scoverage.plugin.version>
@@ -43,12 +43,6 @@
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-streaming_${scalaMajorVersion}</artifactId>
             <version>${sparkVersion}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
         </dependency>
 
         <dependency>

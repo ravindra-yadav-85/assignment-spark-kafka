@@ -1,5 +1,5 @@
 spark-submit \
---master k8s://https://https://<k8s-apiserver-host>:<k8s-apiserver-port> \
+--master k8s://https://<k8s-apiserver-host>:<k8s-apiserver-port> \
 --deploy-mode cluster \
 --conf spark.executor.cores=3 \
 --conf spark.executor.memory=1g \
@@ -20,5 +20,5 @@ spark-submit \
 --conf spark.kubernetes.executor.volumes.hostPath.localvol.options.subPath=/files/Documents/assignment/sparkProject/lib/sparkProject-1.0-SNAPSHOT.jar \
 --conf spark.kubernetes.executor.volumes.hostPath.localvol.options.type=DirectoryOrCreate \
 --conf spark.kubernetes.file.upload.path=files/Documents/assignment/sparkProject \
---class "com.ravindra.batch.BatchApp" local:///files/Documents/assignment/sparkProject/lib/sparkProject-1.0-SNAPSHOT.jar \
+--class "com.ravindra.streaming.StreamingApp" local:///files/Documents/assignment/sparkProject/lib/sparkProject-1.0-SNAPSHOT.jar \
 --configFile /files/Documents/assignment/sparkProject/conf/realtime.properties

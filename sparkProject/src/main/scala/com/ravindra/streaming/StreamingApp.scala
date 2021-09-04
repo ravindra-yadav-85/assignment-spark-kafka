@@ -26,9 +26,6 @@ object StreamingApp extends App with Common{
     // Create Spark Session
     val sparkSession = sparkSessions(config.getString("spark_app_name"))
 
-    // Set Spark logging level to ERROR to avoid various other logs on console.
-//    sparkSession.sparkContext.setLogLevel("ERROR")
-
     val schema = StructType(List(
       StructField("account_no", LongType, true),
       StructField("date", TimestampType, true),
@@ -56,21 +53,17 @@ object StreamingApp extends App with Common{
     val resultDF = initDF.withColumn("month", to_timestamp(trunc(col("date"),"Month"),"yyyy-mm-dd HH:mm:ss"))
       .withWatermark("month","10 minutes")
       .groupBy(col("account_no"), window(col("month"), "1 days").as("window"))
-      .agg(sum("amount").as("total"))
-      .filter(col("total") >= 1000000000).drop(col("window"))
+      .agg(sum("amount").as("total_transaction"))
+      .filter(col("total_transaction") >= 1000000000).drop(col("window"))
 
         resultDF
-//          .repartition(1)
           .writeStream
-//          .trigger(Trigger.ProcessingTime("1 minute"))
-//          .format("csv")
-          .outputMode("append")
+          .outputMode(config.getString("output_mode"))
           .foreachBatch(writeToFile)
-          .option("startingOffset", "earliest")
+          .option("startingOffset", config.getString("clean_source"))
           .option("forceDeleteTempCheckpointLocation", true)
-//          .option("path","sparkProject/data/output/realtime")
-          .option("spark.sql.streaming.fileSource.log.cleanupDelay","1")
-          .option("spark.sql.streaming.fileSource.log.compactInterval","1")
+          .option("spark.sql.streaming.fileSource.log.cleanupDelay",1)
+          .option("spark.sql.streaming.fileSource.log.compactInterval",1)
           .option("cleanSource", config.getString("clean_source"))
           .option("sourceArchiveDir", config.getString("source_archive_dir"))
           .option("checkpointLocation", config.getString("checkpoint_dir"))

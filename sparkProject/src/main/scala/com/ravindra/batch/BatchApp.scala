@@ -25,9 +25,6 @@ object BatchApp extends App with Common {
     //create a spark session
     val sparkSession: SparkSession = sparkSessions(config.getString("spark_app_name"))
 
-    // Set Spark logging level to ERROR to avoid various other logs on console.
-//    sparkSession.sparkContext.setLogLevel("ERROR")
-
     //read the input file
     val loadCsvInput: DataFrame = readFromCsv(sparkSession,
       config.getString("input_path"),
