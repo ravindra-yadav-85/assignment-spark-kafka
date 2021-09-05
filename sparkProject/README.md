@@ -2,9 +2,17 @@
 
 [![Build Status](https://jenkins.datasparkanalytics.com/buildStatus/icon?job=DS_algo)](https://jenkins.datasparkanalytics.com/job/DS_algo)
 
+Use local kubernetes to setup a local Apache Spark cluster and create a streaming application that:
+* streams </data/raw_data/bank_data.csv> through the Spark cluster
+* Aggregates the data using windowing functionality and then reports customers who
+have total transactions of more than IDR 1,000,000,000 in a month. Create a SQL script that performs that same functionality as the application.
+Once again, create the necessary utilities and README files that enable the assessor to easily understand what you have done and to run your code to assess the outcome, the reasoning behind your choice of technology / architecture, the tradeoffs compared to alternative solutions, and potential improvements.
+
+* Create a SQL script that performs that same functionality as the application.
 
 
 ![image](https://user-images.githubusercontent.com/37093793/132118354-932a682d-983a-4011-a0c2-5873be8607b0.png)
+
 
 
 ![image](https://user-images.githubusercontent.com/37093793/132118362-e7885ac0-9d87-49a5-98b2-915d1bfd1526.png)
@@ -17,10 +25,6 @@
 ## Building with Maven
 
     $ mvn clean install
-
-### Skipping tests
-
-    $ mvn clean install -DskipTests
     
     
 Minikube Setup
@@ -118,26 +122,25 @@ Below is a sample spark-submit job that allows reading and writing to your local
 https://spark.apache.org/docs/latest/running-on-kubernetes.html
 ```
 $ ./spark-submit \
---master k8s://https://127.0.0.1:54974 \
+--master k8s://<master-ip>:<port> \
 --deploy-mode cluster \
 --name spark-pi \
 --class org.apache.spark.examples.SparkPi \
 --conf spark.kubernetes.namespace=default \
 --conf spark.executor.instances=2 \
---conf spark.kubernetes.container.image=dataspark-docker-snapshots.artifactory.datasparkanalytics.com/kubernetes/spark/spark:v3.0.0-v-1.1 \
---conf spark.kubernetes.container.image.pullSecrets=artifactory-creds \
+--conf spark.kubernetes.container.image=<spark-image> \
 --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \
---conf spark.kubernetes.driver.volumes.hostPath.localvol.mount.path=/files \
+--conf spark.kubernetes.driver.volumes.hostPath.localvol.mount.path=<mapped-dir> \
 --conf spark.kubernetes.driver.volumes.hostPath.localvol.options.path=/files \
 --conf spark.kubernetes.driver.volumes.hostPath.localvol.options.readOnly=true \
---conf spark.kubernetes.driver.volumes.hostPath.localvol.options.subPath=/files/Build/DataSpark/minikube-cluster/jars/spark-examples_2.12-3.0.0.jar \
+--conf spark.kubernetes.driver.volumes.hostPath.localvol.options.subPath=<path-of-jar> \
 --conf spark.kubernetes.driver.volumes.hostPath.localvol.options.type=DirectoryOrCreate \
---conf spark.kubernetes.executor.volumes.hostPath.localvol.mount.path=/files \
---conf spark.kubernetes.executor.volumes.hostPath.localvol.options.path=/files \
+--conf spark.kubernetes.executor.volumes.hostPath.localvol.mount.path=<mapped-dir> \
+--conf spark.kubernetes.executor.volumes.hostPath.localvol.options.path=<mapped-dir> \
 --conf spark.kubernetes.executor.volumes.hostPath.localvol.options.readOnly=true \
---conf spark.kubernetes.executor.volumes.hostPath.localvol.options.subPath=/files/Build/DataSpark/minikube-cluster/jars/spark-examples_2.12-3.0.0.jar \
+--conf spark.kubernetes.executor.volumes.hostPath.localvol.options.subPath=<path-of-jar> \
 --conf spark.kubernetes.executor.volumes.hostPath.localvol.options.type=DirectoryOrCreate \
-local:///files/Build/DataSpark/minikube-cluster/jars/spark-examples_2.12-3.0.0.jar \
+local:///<path-of-jar> \
 100000
 ```
 
@@ -247,5 +250,9 @@ Apache Spark Vs Apache Flink
 5. `Community Support` Spark has about 1000 and Flink has about 400
 
 #### Potential Improvements
-1. Moving the Input streaming from files to Kafka
-2. Moving to Apache Flink
+1. Identify correct Input (file -> kafka) and Sink (file -> DB or kafka)
+2. Moving to Apache Flink if required
+3. Converting Dataframes to Datasets if this projects grows
+4. Adding unit tests to identify the bugs during build
+5. Dockarise the spark binaries for spark-submit
+6. Enable right partitioning for outputs
