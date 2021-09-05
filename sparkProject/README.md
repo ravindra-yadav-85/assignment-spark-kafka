@@ -90,7 +90,7 @@ There may be time that you will need to ssh to your minikube container running t
 ```
 $ minikube ssh -p <PROFILE-NAME>
 ```
-Launch the Kubernetes dashboard to access those logs and see the status of your cluste
+Launch the Kubernetes dashboard to access those logs and see the status of your cluster
 ```
 $ minikube dashboard -p <PROFILE-NAME>
 ```
@@ -107,7 +107,11 @@ $ kubectl cluster-info
 ```
 Create namespace, service account, cluster role bindings. This will allow the service account to be able to create and delete pods, services and resources for running a spark job.
 ```
-$ kubectl create -f ./kubernetes/spark-rbac.yml
+$ kubectl create serviceaccount spark --namespace=default
+$ kubectl create clusterrolebinding \
+spark-role --clusterrole=edit \
+--serviceaccount=default:spark \
+--namespace=default
 ```
 
 Use any publically available docker Spark image 
