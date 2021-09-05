@@ -105,7 +105,7 @@ View the cluster information by running this command. It is important to collect
 ```
 $ kubectl cluster-info
 ```
-Create namespace, service account, cluster role bindings. This will allow the service account to be able to create and delete pods, services and resources for running a spark job.
+Create service account, cluster role bindings. This will allow the service account to be able to create and delete pods, services and resources for running a spark job.
 ```
 $ kubectl create serviceaccount spark --namespace=default
 $ kubectl create clusterrolebinding \
