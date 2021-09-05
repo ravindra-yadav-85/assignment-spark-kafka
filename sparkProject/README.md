@@ -107,7 +107,7 @@ $ kubectl cluster-info
 ```
 Create namespace, service account, cluster role bindings. This will allow the service account to be able to create and delete pods, services and resources for running a spark job.
 ```
-$ kubectl create -f ./kubernetes/spark-rbac.yaml
+$ kubectl create -f ./kubernetes/spark-rbac.yml
 ```
 
 Use any publically available docker Spark image 
