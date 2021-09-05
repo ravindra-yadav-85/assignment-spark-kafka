@@ -1,5 +1,5 @@
 spark-submit \
---master k8s://https://<k8s-apiserver-host>:<k8s-apiserver-port> \
+--master k8s://https://127.0.0.1:32788 \
 --deploy-mode cluster \
 --conf spark.executor.cores=3 \
 --conf spark.executor.memory=1g \
@@ -21,4 +21,4 @@ spark-submit \
 --conf spark.kubernetes.executor.volumes.hostPath.localvol.options.type=DirectoryOrCreate \
 --conf spark.kubernetes.file.upload.path=files/Documents/assignment/sparkProject \
 --class "com.ravindra.streaming.StreamingApp" local:///files/Documents/assignment/sparkProject/lib/sparkProject-1.0-SNAPSHOT.jar \
---configFile /files/Documents/assignment/sparkProject/conf/realtime.properties
+--configFile /files/Documents/assignment/sparkProject/conf/streaming.properties
