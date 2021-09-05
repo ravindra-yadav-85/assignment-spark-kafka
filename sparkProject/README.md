@@ -231,14 +231,20 @@ output/batch -> BATCH OUTPUT DIRECTORY
 2. cd spark-project
 
 3. Spark Batch App
-   1. Update the configs
-   2. run batch sh ./bin/batch_runner.sh
-   3. Output will be available at output directory
+   1. Update the configs as described in Configurations section
+   2. Run batch job using sh command
+   ```
+      $ sh ./bin/batch_runner.sh
+   ```   
+   4. Output will be available at output directory as described in 'Data Directories'
 
 4. Spark Streaming App
-   1. Update the configs
-   2. run streaming sh ./bin/streaming_runner.sh
-   3. Output will be available at output directory
+   1. Update the configs as described in 'Configurations' section
+   2. Run streaming job using sh command
+   ```
+      $ sh ./bin/streaming_runner.sh
+   ```   
+   4. Output will be available at output directory as described in 'Data Directories' section
 
 
 #### Tradeoffs compared to alternative solutions
