@@ -2,6 +2,13 @@
 
 [![Build Status](https://jenkins.datasparkanalytics.com/buildStatus/icon?job=DS_algo)](https://jenkins.datasparkanalytics.com/job/DS_algo)
 
+
+
+![image](https://user-images.githubusercontent.com/37093793/132118354-932a682d-983a-4011-a0c2-5873be8607b0.png)
+
+
+![image](https://user-images.githubusercontent.com/37093793/132118362-e7885ac0-9d87-49a5-98b2-915d1bfd1526.png)
+
 #### Dependencies
 
 * Scala 2.12
