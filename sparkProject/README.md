@@ -58,6 +58,8 @@ $ minikube start \
 --driver=docker \
 --kubernetes-version=<K8S-VERSION>
 
+Note: You can use hyperkit instead of docker as well.
+
 where:
 <PROFILE-NAME> = name of the cluster
 </LOCAL/FILESYSTEM/> = The local machine’s filesystem path you want to mount to minikube and on the containers
@@ -71,7 +73,7 @@ Example:
 minikube start \
 -p minikube-local \
 --mount --mount-string \
-/Users/marvinlandicho/:/files/ \
+/Users/ravindra/:/files/ \
 --disk-size 100g \
 --memory 16384 \
 --cpus 6 \
