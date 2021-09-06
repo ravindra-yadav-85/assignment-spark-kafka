@@ -7,7 +7,7 @@ import org.apache.spark.sql.{DataFrame, SaveMode}
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
 
-object StreamingApp extends App with Common{
+object StreamingApp extends App with Common {
 
   case class Arguments(configPath: String = "")
 
@@ -26,6 +26,7 @@ object StreamingApp extends App with Common{
     // Create Spark Session
     val sparkSession = sparkSessions(config.getString("spark_app_name"))
 
+    //Define the schema for the Input
     val schema = StructType(List(
       StructField("account_no", LongType, true),
       StructField("date", TimestampType, true),
@@ -50,28 +51,32 @@ object StreamingApp extends App with Common{
     println("Schema of DataFame initDF ...")
     println(initDF.printSchema())
 
-    val resultDF = initDF.withColumn("month", to_timestamp(trunc(col("date"),"Month"),"yyyy-mm-dd HH:mm:ss"))
-      .withWatermark("month","10 minutes")
+    //Run the aggregation
+    val resultDF = initDF.withColumn("month", to_timestamp(trunc(col("date"), "Month"), "yyyy-mm-dd HH:mm:ss"))
+      .withWatermark("month", "10 minutes")
       .groupBy(col("account_no"), window(col("month"), "1 days").as("window"))
       .agg(sum("amount").as("total_transaction"))
       .filter(col("total_transaction") >= 1000000000).drop(col("window"))
 
-        resultDF
-          .writeStream
-          .outputMode(config.getString("output_mode"))
-          .foreachBatch(writeToFile)
-          .option("startingOffset", config.getString("clean_source"))
-          .option("forceDeleteTempCheckpointLocation", true)
-          .option("spark.sql.streaming.fileSource.log.cleanupDelay", config.getString("cleanup_delay").toInt)
-          .option("spark.sql.streaming.fileSource.log.compactInterval", config.getString("compact_interval").toInt)
-          .option("cleanSource", config.getString("clean_source"))
-          .option("sourceArchiveDir", config.getString("source_archive_dir"))
-          .option("checkpointLocation", config.getString("checkpoint_dir"))
-          .start()
-          .awaitTermination()
+    //write it to output and start streaming for new files
+    resultDF
+      .writeStream
+      .outputMode(config.getString("output_mode"))
+      .foreachBatch(writeToFile)
+      .option("startingOffset", config.getString("clean_source"))
+      .option("forceDeleteTempCheckpointLocation", true)
+      .option("spark.sql.streaming.fileSource.log.cleanupDelay", config.getString("cleanup_delay").toInt)
+      .option("spark.sql.streaming.fileSource.log.compactInterval", config.getString("compact_interval").toInt)
+      .option("cleanSource", config.getString("clean_source"))
+      .option("sourceArchiveDir", config.getString("source_archive_dir"))
+      .option("checkpointLocation", config.getString("checkpoint_dir"))
+      .start()
+      .awaitTermination()
 
+    //stop the sparkSession
     sparkSession.stop()
 
+    //Store the output
     def writeToFile = (df: DataFrame, batchId: Long) => {
       //calculate the num of partitions
       val numOfPartitions = retunNumOfPartition(df, config.getString("block_size").toInt)

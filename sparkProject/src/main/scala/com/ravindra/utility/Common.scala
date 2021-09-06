@@ -41,7 +41,7 @@ trait Common {
 
   /**
    * reading table format input
-   * @param df
+   * @param dataFrame
    * @param outputPath
    * @param outputDelimiter
    */
@@ -79,9 +79,13 @@ trait Common {
   }
 
   /**
-   * return num of partitions
-   * @param df
-   * @param blockSize
+   * return the file stream dataframe
+   * @param sparkSession
+   * @param inputFormat
+   * @param header
+   * @param maxFilesPerTrigger
+   * @param streamPath
+   * @param schemas
    */
   def readFileStream(sparkSession: SparkSession, inputFormat: String, header: String, maxFilesPerTrigger: Int,
                      streamPath: String, schemas: StructType): DataFrame ={
