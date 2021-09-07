@@ -268,3 +268,4 @@ Apache Spark Vs Apache Flink
 4. Adding unit tests to identify the bugs during build
 5. Dockarise the spark binaries for spark-submit
 6. Enable right partitioning for outputs
+7. Implement exception handling and logging
